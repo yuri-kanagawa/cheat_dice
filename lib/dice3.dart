@@ -1,18 +1,18 @@
 import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
-import 'package:zflutter/zflutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zflutter/zflutter.dart';
+
 import 'mobad.dart';
 
-
 class Dices3 extends StatefulWidget {
-  _Dices3State createState()  => _Dices3State();
+  _Dices3State createState() => _Dices3State();
 }
 
-class _Dices3State extends State<Dices3>
-    with SingleTickerProviderStateMixin {
+class _Dices3State extends State<Dices3> with SingleTickerProviderStateMixin {
   AnimationController animationController;
 
   SpringSimulation simulation;
@@ -45,10 +45,11 @@ class _Dices3State extends State<Dices3>
       1, // velocity
     );
 
-    animationController =
-    AnimationController(vsync: this, duration: Duration(milliseconds: 2000))
-      ..addListener(() {
-         //rotation = rotation + ZVector.all(0.1);
+    animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 2000),
+    )..addListener(() {
+        //rotation = rotation + ZVector.all(0.1);
         setState(() {});
       });
   }
@@ -60,20 +61,21 @@ class _Dices3State extends State<Dices3>
     num3 = 6 - Random().nextInt(5);
   }
 
-  roolcount() async{
+  roolcount() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     count = prefs.getInt('counter');
   }
 
-  Calculator(int sum) async{
-
+  Calculator(int sum) async {
     List<List<int>> value_pattern = [];
 
-    for(int i = 1 ; i <= 6 ; i++){
-      for(int j = 1 ; j <= 6 ; j++){
-        for(int k = 1 ; k <= 6 ; k++){
-          if(i + j + k == sum){
-            value_pattern.add([i,j,k]);
+    for (int i = 1; i <= 6; i++) {
+      for (int j = 1; j <= 6; j++) {
+        for (int k = 1; k <= 6; k++) {
+          if (i + j + k == sum) {
+            value_pattern.add(
+              [i, j, k],
+            );
           }
         }
       }
@@ -83,12 +85,10 @@ class _Dices3State extends State<Dices3>
     dice_number = value_pattern[pattern][0];
     dice_number2 = value_pattern[pattern][1];
     dice_number3 = value_pattern[pattern][2];
-    print(value_pattern[pattern]);
   }
 
   @override
   Widget build(BuildContext context) {
-
     //画面サイズ取得
     final Size size = MediaQuery.of(context).size;
     var maxHeight = size.height;
@@ -119,15 +119,17 @@ class _Dices3State extends State<Dices3>
         var tap_width = tap_point.dx;
         var tap_height = tap_point.dy;
 
-        if (animationController.isAnimating){
-          animationController.reset();//アニメーション中断(振り直し)
+        if (animationController.isAnimating) {
+          animationController.reset(); //アニメーション中断(振り直し)
           Adcount.counter();
-        }else {
-          roolcount();//回数取得
-          if(count == 1) { //偶数回
+        } else {
+          roolcount(); //回数取得
+          if (count == 1) {
+            //偶数回
             print("偶数");
             print(tap_width);
-            if(tap_height < 50) {//上段
+            if (tap_height < 50) {
+              //上段
               print("上段");
               press = 1;
               if (maxWidth_1 > tap_width) {
@@ -140,19 +142,20 @@ class _Dices3State extends State<Dices3>
                 dice_number = 1;
                 dice_number2 = 1;
                 dice_number3 = 1;
-              } else if(maxWidth_3 > tap_width){//3~6
+              } else if (maxWidth_3 > tap_width) {
+                //3~6
                 print("3~6");
                 var value_range = [3, 4, 5, 6];
                 int lottery = Random().nextInt(4);
                 Calculator(value_range[lottery]);
-              }else if(tap_width >= maxWidth_3){
+              } else if (tap_width >= maxWidth_3) {
                 print("7~9");
                 var value_range = [7, 8, 9];
                 int lottery = Random().nextInt(3);
                 Calculator(value_range[lottery]);
               }
-            }else if(tap_height < 100 &&
-                tap_height >= 50) {//上中段
+            } else if (tap_height < 100 && tap_height >= 50) {
+              //上中段
               press = 1;
               if (maxWidth_1 > tap_width) {
                 print("4*4*4");
@@ -165,25 +168,24 @@ class _Dices3State extends State<Dices3>
                 dice_number2 = 3;
                 dice_number3 = 3;
               } else if (maxWidth_3 > tap_width) {
-
                 print("4*5*6");
                 var value_range = [4, 5, 6];
                 int lottery = Random().nextInt(3);
                 dice_number = value_range[lottery];
-                value_range.remove(dice_number);//１個めのダイスの値削除
+                value_range.remove(dice_number); //１個めのダイスの値削除
                 lottery = Random().nextInt(2);
                 dice_number2 = value_range[lottery];
-                value_range.remove(dice_number2);//2個めのダイスの値削除
+                value_range.remove(dice_number2); //2個めのダイスの値削除
                 lottery = Random().nextInt(1);
                 dice_number3 = value_range[lottery];
-              }else if(tap_width >= maxWidth_3){
+              } else if (tap_width >= maxWidth_3) {
                 print("10~13");
-                var value_range = [10,11,12,13];
+                var value_range = [10, 11, 12, 13];
                 int lottery = Random().nextInt(4);
                 Calculator(value_range[lottery]);
-
               }
-            }else if(tap_height < 150) {//上下段
+            } else if (tap_height < 150) {
+              //上下段
               press = 1;
               if (maxWidth_1 > tap_width) {
                 print("6*6*6");
@@ -197,15 +199,15 @@ class _Dices3State extends State<Dices3>
                 dice_number3 = 5;
               } else if (maxWidth_2 <= tap_width) {
                 print("10~11");
-                var value_range = [10,11];
+                var value_range = [10, 11];
                 int lottery = Random().nextInt(2);
                 Calculator(value_range[lottery]);
               }
             }
-
-          }else { //奇数回数
-            if (maxHeight - 150 < tap_height &&
-                tap_height <= maxHeight - 100) {//上段
+          } else {
+            //奇数回数
+            if (maxHeight - 150 < tap_height && tap_height <= maxHeight - 100) {
+              //上段
               press = 1;
               print("奇数");
               if (maxWidth_1 > tap_width) {
@@ -218,15 +220,16 @@ class _Dices3State extends State<Dices3>
                 dice_number = 1;
                 dice_number2 = 1;
                 dice_number3 = 1;
-              } else{//3~6
+              } else {
+                //3~6
                 print("3~6");
                 var value_range = [3, 4, 5, 6];
                 int lottery = Random().nextInt(4);
                 Calculator(value_range[lottery]);
               }
             }
-            if (maxHeight - 100 < tap_height &&
-                tap_height < maxHeight - 50) {//下中断
+            if (maxHeight - 100 < tap_height && tap_height < maxHeight - 50) {
+              //下中断
               press = 1;
               if (maxWidth_1 > tap_width) {
                 print("4*4*4");
@@ -245,7 +248,8 @@ class _Dices3State extends State<Dices3>
                 Calculator(value_range[lottery]);
               }
             }
-            if (maxHeight - 50 < tap_height) {//下下断
+            if (maxHeight - 50 < tap_height) {
+              //下下断
               press = 1;
               if (maxWidth_1 > tap_width) {
                 print("6*6*6");
@@ -259,7 +263,7 @@ class _Dices3State extends State<Dices3>
                 dice_number3 = 5;
               } else if (maxWidth_2 <= tap_width) {
                 print("10~11");
-                var value_range = [10,11];
+                var value_range = [10, 11];
                 int lottery = Random().nextInt(2);
                 Calculator(value_range[lottery]);
               }
@@ -276,73 +280,99 @@ class _Dices3State extends State<Dices3>
           zoom: 1,
           children: [
             ZPositioned(
-              translate: ZVector(-80 * zoom,50,0 ),
+              translate: ZVector(-80 * zoom, 50, 0),
               child: ZGroup(
                 children: [
                   ZPositioned(
                     scale: ZVector.all(zoom),
-                    rotate: press == 0 ?
-                    getRotation(num3).multiplyScalar(curvedValue.value) -
-                        ZVector.all((tau / 2) * (firstHalf.value)) -
-                        ZVector.all((tau / 2) * (secondHalf.value))
-                        :
-                    getRotation(dice_number3).multiplyScalar(curvedValue.value) -
-                        ZVector.all((tau / 2) * (firstHalf.value)) -
-                        ZVector.all((tau / 2) * (secondHalf.value))
-                    ,
+                    rotate: press == 0
+                        ? getRotation(num3).multiplyScalar(curvedValue.value) -
+                            ZVector.all(
+                              (tau / 2) * (firstHalf.value),
+                            ) -
+                            ZVector.all(
+                              (tau / 2) * (secondHalf.value),
+                            )
+                        : getRotation(dice_number3)
+                                .multiplyScalar(curvedValue.value) -
+                            ZVector.all(
+                              (tau / 2) * (firstHalf.value),
+                            ) -
+                            ZVector.all(
+                              (tau / 2) * (secondHalf.value),
+                            ),
                     child: ZPositioned(
-                        rotate: ZVector.only(
-                            z: -zRotation * 1.9 * (animationController.value)),
-                        child: Dice(
-                          zoom: zoom,
-
-                        )),
+                      rotate: ZVector.only(
+                        z: -zRotation * 1.9 * (animationController.value),
+                      ),
+                      child: Dice(
+                        zoom: zoom,
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
             ZPositioned(
-              translate: ZVector(80 * zoom,50,0),
+              translate: ZVector(80 * zoom, 50, 0),
               child: ZGroup(
                 children: [
                   ZPositioned(
                     scale: ZVector.all(zoom),
-                    rotate: press == 0 ?
-                    getRotation(num2).multiplyScalar(curvedValue.value) -
-                        ZVector.all((tau / 2) * (firstHalf.value)) -
-                        ZVector.all((tau / 2) * (secondHalf.value))
-                        :
-                    getRotation(dice_number2).multiplyScalar(curvedValue.value) -
-                        ZVector.all((tau / 2) * (firstHalf.value)) -
-                        ZVector.all((tau / 2) * (secondHalf.value))
-                    ,
+                    rotate: press == 0
+                        ? getRotation(num2).multiplyScalar(curvedValue.value) -
+                            ZVector.all(
+                              (tau / 2) * (firstHalf.value),
+                            ) -
+                            ZVector.all(
+                              (tau / 2) * (secondHalf.value),
+                            )
+                        : getRotation(dice_number2)
+                                .multiplyScalar(curvedValue.value) -
+                            ZVector.all(
+                              (tau / 2) * (firstHalf.value),
+                            ) -
+                            ZVector.all(
+                              (tau / 2) * (secondHalf.value),
+                            ),
                     child: ZPositioned(
-                        rotate: ZVector.only(
-                            z: -zRotation * 2.1 * (animationController.value)),
-                        child: Dice(zoom: zoom)),
+                      rotate: ZVector.only(
+                        z: -zRotation * 2.1 * (animationController.value),
+                      ),
+                      child: Dice(zoom: zoom),
+                    ),
                   ),
                 ],
               ),
             ),
             ZPositioned(
-              translate: ZVector(0,-90,0),
+              translate: ZVector(0, -90, 0),
               child: ZGroup(
                 children: [
                   ZPositioned(
                     scale: ZVector.all(zoom),
-                    rotate: press == 0 ?
-                    getRotation(num).multiplyScalar(curvedValue.value) -
-                        ZVector.all((tau / 2) * (firstHalf.value)) -
-                        ZVector.all((tau / 2) * (secondHalf.value))
-                        :
-                    getRotation(dice_number).multiplyScalar(curvedValue.value) -
-                        ZVector.all((tau / 2) * (firstHalf.value)) -
-                        ZVector.all((tau / 2) * (secondHalf.value))
-                    ,
+                    rotate: press == 0
+                        ? getRotation(num).multiplyScalar(curvedValue.value) -
+                            ZVector.all(
+                              (tau / 2) * (firstHalf.value),
+                            ) -
+                            ZVector.all(
+                              (tau / 2) * (secondHalf.value),
+                            )
+                        : getRotation(dice_number)
+                                .multiplyScalar(curvedValue.value) -
+                            ZVector.all(
+                              (tau / 2) * (firstHalf.value),
+                            ) -
+                            ZVector.all(
+                              (tau / 2) * (secondHalf.value),
+                            ),
                     child: ZPositioned(
-                        rotate: ZVector.only(
-                            z: -zRotation * 2.1 * (animationController.value)),
-                        child: Dice(zoom: zoom)),
+                      rotate: ZVector.only(
+                        z: -zRotation * 2.1 * (animationController.value),
+                      ),
+                      child: Dice(zoom: zoom),
+                    ),
                   ),
                 ],
               ),
@@ -413,8 +443,14 @@ class GroupTwo extends StatelessWidget {
     return ZGroup(
       sortMode: SortMode.update,
       children: [
-        ZPositioned(translate: ZVector.only(y: -20), child: Dot()),
-        ZPositioned(translate: ZVector.only(y: 20), child: Dot()),
+        ZPositioned(
+          translate: ZVector.only(y: -20),
+          child: Dot(),
+        ),
+        ZPositioned(
+          translate: ZVector.only(y: 20),
+          child: Dot(),
+        ),
       ],
     );
   }
@@ -426,8 +462,14 @@ class GroupFour extends StatelessWidget {
     return ZGroup(
       sortMode: SortMode.update,
       children: [
-        ZPositioned(translate: ZVector.only(x: 20, y: 0), child: GroupTwo()),
-        ZPositioned(translate: ZVector.only(x: -20, y: 0), child: GroupTwo()),
+        ZPositioned(
+          translate: ZVector.only(x: 20, y: 0),
+          child: GroupTwo(),
+        ),
+        ZPositioned(
+          translate: ZVector.only(x: -20, y: 0),
+          child: GroupTwo(),
+        ),
       ],
     );
   }
@@ -448,26 +490,33 @@ class Dice extends StatelessWidget {
           sortMode: SortMode.update,
           children: [
             ZPositioned(
-                translate: ZVector.only(z: -25),
-                child: Face(zoom: zoom, color: color)),
+              translate: ZVector.only(z: -25),
+              child: Face(zoom: zoom, color: color),
+            ),
             ZPositioned(
-                translate: ZVector.only(z: 25),
-                child: Face(zoom: zoom, color: color)),
+              translate: ZVector.only(z: 25),
+              child: Face(zoom: zoom, color: color),
+            ),
             ZPositioned(
-                translate: ZVector.only(y: 25),
-                rotate: ZVector.only(x: tau / 4),
-                child: Face(
-                  zoom: zoom,
-                  color: color,
-                )),
+              translate: ZVector.only(y: 25),
+              rotate: ZVector.only(x: tau / 4),
+              child: Face(
+                zoom: zoom,
+                color: color,
+              ),
+            ),
             ZPositioned(
-                translate: ZVector.only(y: -25),
-                rotate: ZVector.only(x: tau / 4),
-                child: Face(zoom: zoom, color: color)),
+              translate: ZVector.only(y: -25),
+              rotate: ZVector.only(x: tau / 4),
+              child: Face(zoom: zoom, color: color),
+            ),
           ],
         ),
         //one
-        ZPositioned(translate: ZVector.only(z: 50), child: Dot()),
+        ZPositioned(
+          translate: ZVector.only(z: 50),
+          child: Dot(),
+        ),
         //two
         ZPositioned(
           rotate: ZVector.only(x: tau / 4),
@@ -475,8 +524,14 @@ class Dice extends StatelessWidget {
           child: ZGroup(
             sortMode: SortMode.update,
             children: [
-              ZPositioned(translate: ZVector.only(y: -20), child: Dot()),
-              ZPositioned(translate: ZVector.only(y: 20), child: Dot()),
+              ZPositioned(
+                translate: ZVector.only(y: -20),
+                child: Dot(),
+              ),
+              ZPositioned(
+                translate: ZVector.only(y: 20),
+                child: Dot(),
+              ),
             ],
           ),
         ),
@@ -488,8 +543,14 @@ class Dice extends StatelessWidget {
             sortMode: SortMode.update,
             children: [
               Dot(),
-              ZPositioned(translate: ZVector.only(x: 20, y: -20), child: Dot()),
-              ZPositioned(translate: ZVector.only(x: -20, y: 20), child: Dot()),
+              ZPositioned(
+                translate: ZVector.only(x: 20, y: -20),
+                child: Dot(),
+              ),
+              ZPositioned(
+                translate: ZVector.only(x: -20, y: 20),
+                child: Dot(),
+              ),
             ],
           ),
         ),
@@ -501,9 +562,13 @@ class Dice extends StatelessWidget {
             sortMode: SortMode.update,
             children: [
               ZPositioned(
-                  translate: ZVector.only(x: 20, y: 0), child: GroupTwo()),
+                translate: ZVector.only(x: 20, y: 0),
+                child: GroupTwo(),
+              ),
               ZPositioned(
-                  translate: ZVector.only(x: -20, y: 0), child: GroupTwo()),
+                translate: ZVector.only(x: -20, y: 0),
+                child: GroupTwo(),
+              ),
             ],
           ),
         ),
@@ -516,7 +581,9 @@ class Dice extends StatelessWidget {
             sortMode: SortMode.update,
             children: [
               Dot(),
-              ZPositioned(child: GroupFour()),
+              ZPositioned(
+                child: GroupFour(),
+              ),
             ],
           ),
         ),
@@ -527,8 +594,13 @@ class Dice extends StatelessWidget {
           child: ZGroup(
             sortMode: SortMode.update,
             children: [
-              ZPositioned(rotate: ZVector.only(z: tau / 4), child: GroupTwo()),
-              ZPositioned(child: GroupFour()),
+              ZPositioned(
+                rotate: ZVector.only(z: tau / 4),
+                child: GroupTwo(),
+              ),
+              ZPositioned(
+                child: GroupFour(),
+              ),
             ],
           ),
         ),

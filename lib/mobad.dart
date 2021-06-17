@@ -1,33 +1,30 @@
 import 'dart:io';
+
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 class Adcount {
-
-
   //2回のカウントを行う
   static counter() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     int count = prefs.getInt('counter');
     print(count);
-    if (count == null){
-      prefs.setInt('counter',1);
+    if (count == null) {
+      prefs.setInt('counter', 1);
       count = prefs.getInt('counter');
     }
 
-    if(count > 1){
-      prefs.setInt('counter',1);
+    if (count > 1) {
+      prefs.setInt('counter', 1);
       AdmobService.showInterstitialAd();
-    }else{
-      count ++;
-      prefs.setInt('counter',count);
+    } else {
+      count++;
+      prefs.setInt('counter', count);
     }
   }
 }
 
 class AdmobService {
-
   static InterstitialAd _interstitialAd;
 
   static String get iOSInterstitialAdUnitID => Platform.isAndroid
@@ -45,13 +42,20 @@ class AdmobService {
       adUnitId: iOSInterstitialAdUnitID,
       request: AdRequest(),
       listener: AdListener(
-          onAdLoaded: (Ad ad) => {_interstitialAd.show()},
-          onAdFailedToLoad: (Ad ad, LoadAdError error) {
-            print('Ad failed to load: $error');
-          },
-          onAdOpened: (Ad ad) => print('Ad opened.'),
-          onAdClosed: (Ad ad) => {_interstitialAd.dispose()},
-          onApplicationExit: (Ad ad) => {_interstitialAd.dispose()}),
+        onAdLoaded: (Ad ad) => {
+          _interstitialAd.show(),
+        },
+        onAdFailedToLoad: (Ad ad, LoadAdError error) {
+          print('Ad failed to load: $error');
+        },
+        onAdOpened: (Ad ad) => print('Ad opened.'),
+        onAdClosed: (Ad ad) => {
+          _interstitialAd.dispose(),
+        },
+        onApplicationExit: (Ad ad) => {
+          _interstitialAd.dispose(),
+        },
+      ),
     );
   }
 
@@ -64,4 +68,3 @@ class AdmobService {
     _interstitialAd.load();
   }
 }
-
